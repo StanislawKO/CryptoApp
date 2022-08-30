@@ -5,17 +5,19 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.codexample.cryptoapp.R
+import com.codexample.cryptoapp.databinding.ActivityCoinDetailBinding
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.activity_coin_detail.*
 
 class CoinDetailActivity : AppCompatActivity() {
 
     private lateinit var viewModel: CoinViewModel
+    private val binding by lazy {
+        ActivityCoinDetailBinding.inflate(layoutInflater)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_coin_detail)
+        setContentView(binding.root )
         if (!intent.hasExtra(EXTRA_FROM_SYMBOL)) {
             finish()
             return
@@ -24,15 +26,16 @@ class CoinDetailActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this)[CoinViewModel::class.java]
         viewModel.getDetailInfo(fromSymbol).observe(this) {
 //                Log.d("DETAIL_INFO", it.toString())
-            tvPrice.text = it.price.toString()
-            tvMinPrice.text = it.lowDay.toString()
-            tvMaxPrice.text = it.highDay.toString()
-            tvLastMarker.text = it.lastMarket.toString()
-            tvLastUpdate.text = it.lastUpdate
-            tvFromSymbol.text = it.fromSymbol
-            tvToSymbol.text = it.toSymbol
-            Picasso.get().load(it.imageUrl).into(ivLogoCoin)
-
+            with(binding) {
+                tvPrice.text = it.price.toString()
+                tvMinPrice.text = it.lowDay.toString()
+                tvMaxPrice.text = it.highDay.toString()
+                tvLastMarker.text = it.lastMarket.toString()
+                tvLastUpdate.text = it.lastUpdate
+                tvFromSymbol.text = it.fromSymbol
+                tvToSymbol.text = it.toSymbol
+                Picasso.get().load(it.imageUrl).into(ivLogoCoin)
+            }
         }
     }
 
